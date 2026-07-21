@@ -1,0 +1,64 @@
+# ---------- Node.js (services/user, order, payment, notification) ----------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+coverage/
+*.tsbuildinfo
+
+# Environment files — never commit real secrets/config
+.env
+.env.*
+!.env.example
+
+# ---------- Terraform (infra/) ----------
+# Local state — remote state lives in S3, this should never be committed
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Local .terraform directories (downloaded providers/modules)
+**/.terraform/*
+.terraform.lock.hcl
+
+# Variable files that may contain sensitive values
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# Crash logs
+crash.log
+crash.*.log
+
+# CLI config that may contain credentials
+.terraformrc
+terraform.rc
+
+# Plan output files
+*.tfplan
+tfplan*
+
+# ---------- Docker ----------
+*.pid
+
+# ---------- OS / editor cruft ----------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------- Kubernetes / ArgoCD (local kubeconfig, never commit) ----------
+kubeconfig
+kubeconfig*.yaml
+*.kubeconfig
+
+# ---------- Logs ----------
+*.log
+logs/
+
+
+
+
