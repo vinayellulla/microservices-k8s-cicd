@@ -23,3 +23,9 @@ variable "master_username" {
   type    = string
   default = "appadmin"
 }
+
+# # variables.tf
+# variable "aurora_engine_version" {
+#   type    = string
+#   default = "16.11"
+# }
