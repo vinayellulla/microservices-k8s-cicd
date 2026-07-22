@@ -72,6 +72,16 @@ jobs:
            echo "Event: ${{ github.event_name }}"
            echo "Actor: ${{ github.actor }}"
 
+      - name: Debug OIDC Token Claims
+        uses: actions/github-script@v7 
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const payload = JSON.parse(
+              .from(token.split('.')[1], 'base64').toString()
+            );
+            console.log(payload);
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
