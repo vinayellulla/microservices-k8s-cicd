@@ -62,6 +62,16 @@ jobs:
         working-directory: services/${{ matrix.service }}
         run: npm test
 
+
+      - name: Debug GitHub 
+        run: |
+           echo "Repository: ${{ github.repository }}"
+           echo "Repository Owner: ${{ github.repository_owner }}"
+           echo "Ref: ${{ github.ref }}"
+           echo "Ref Name: ${{ github.ref_name }}"
+           echo "Event: ${{ github.event_name }}"
+           echo "Actor: ${{ github.actor }}"
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:

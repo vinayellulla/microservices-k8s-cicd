@@ -44,3 +44,9 @@ variable "db_name" {
 variable "master_username" {
   type = string
 }
+
+
+variable "github_oidc_provider_arn" {
+  type = string
+
+}
