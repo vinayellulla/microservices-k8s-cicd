@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: notification
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/vinayellulla/microservices-k8s-cicd.git
+    targetRevision: main
+    path: k8s/notification
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: microservices
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
