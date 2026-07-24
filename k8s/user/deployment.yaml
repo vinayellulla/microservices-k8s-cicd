@@ -22,11 +22,7 @@ spec:
     spec:
       containers:
         - name: user
-<<<<<<< HEAD
           image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-user:f420fc9cf19e1183bc812e6e190d20292016fd78
-=======
-          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-user:f420fc9cf19e1183bc812e6e190d20292016fd78
->>>>>>> ed87cf8 (Added Database)
           ports:
             - containerPort: 3000
           env:
