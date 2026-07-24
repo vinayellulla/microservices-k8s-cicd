@@ -1,7 +1,7 @@
 resource "aws_ecr_repository" "svc" {
   for_each             = toset(var.services)
   name                 = "${var.project}-${each.key}"
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
 }
 
 resource "aws_ecr_lifecycle_policy" "expire_untagged" {

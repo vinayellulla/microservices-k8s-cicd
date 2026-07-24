@@ -68,3 +68,11 @@ module "rds" {
   db_name                    = var.db_name
   master_username            = var.master_username
 }
+
+module "eso_irsa" {
+  source            = "../../modules/eso-irsa"
+  project           = var.project
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+  rds_secret_arn    = module.rds.secret_arn
+}

@@ -17,3 +17,7 @@ output "rds_cluster_endpoint" {
 output "rds_secret_arn" {
   value = module.rds.secret_arn
 }
+
+output "eso_irsa_role_arn" {
+  value = module.eso_irsa.role_arn
+}
