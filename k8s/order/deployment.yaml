@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-order:506e10d894bb4fa964e6cce5f81fd33402fb
+          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-order:2719deaa43a52491846d19a6af6eadd677213d24
           ports:
             - containerPort: 3000
           env:
