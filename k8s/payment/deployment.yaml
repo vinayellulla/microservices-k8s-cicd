@@ -28,6 +28,9 @@ spec:
           env:
             - name: PORT
               value: "3000"
+          envFrom:
+            - secretRef:
+                name: rds-credentials
           resources:
             requests:
               cpu: 100m
