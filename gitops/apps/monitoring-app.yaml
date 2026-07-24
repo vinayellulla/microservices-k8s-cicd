@@ -32,7 +32,10 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
-          adminPassword: changeme123
+            admin: 
+              existingSecret: grafana-admin-credentials
+              userKey: admin-user
+              passwordKey: admin-password
         alertmanager:
           enabled: false
         prometheusOperator:

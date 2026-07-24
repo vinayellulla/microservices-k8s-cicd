@@ -76,3 +76,10 @@ module "eso_irsa" {
   oidc_provider_url = module.eks.oidc_provider_url
   rds_secret_arn    = module.rds.secret_arn
 }
+
+
+# infra/environments/dev/main.tf
+module "monitoring_secrets" {
+  source  = "../../modules/monitoring-secrets"
+  project = var.project
+}

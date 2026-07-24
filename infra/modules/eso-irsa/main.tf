@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "read_rds_secret" {
     Statement = [{
       Effect   = "Allow"
       Action   = "secretsmanager:GetSecretValue"
-      Resource = var.rds_secret_arn
+      Resource = "arn:aws:secretsmanager:*:*:secret:${var.project}/*"
     }]
   })
 }
