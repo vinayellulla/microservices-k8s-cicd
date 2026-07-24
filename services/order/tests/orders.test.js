@@ -1,12 +1,18 @@
+jest.mock("../src/db", () => ({
+  query: jest.fn(),
+}));
+
 const request = require("supertest");
 const nock = require("nock");
 const app = require("../src/app");
+const pool = require("../src/db");
 
 const PAYMENT_URL = process.env.PAYMENT_SERVICE_URL || "http://localhost:3001";
 const NOTIFICATION_URL =
   process.env.NOTIFICATION_SERVICE_URL || "http://localhost:3002";
 
-afterEach(() => {
+beforeEach(() => {
+  pool.query.mockReset();
   nock.cleanAll();
 });
 
@@ -19,6 +25,30 @@ describe("GET /health", () => {
 
 describe("POST /orders", () => {
   it("confirms an order when payment succeeds", async () => {
+    pool.query
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "pending",
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "confirmed",
+          },
+        ],
+      });
+
     nock(PAYMENT_URL).post("/payments").reply(200, { status: "success" });
     nock(NOTIFICATION_URL)
       .post("/notifications")
@@ -30,9 +60,34 @@ describe("POST /orders", () => {
 
     expect(res.statusCode).toBe(201);
     expect(res.body.status).toBe("confirmed");
+    expect(pool.query).toHaveBeenCalledTimes(2);
   });
 
   it("marks order as payment_failed when payment declines", async () => {
+    pool.query
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "pending",
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "payment_failed",
+          },
+        ],
+      });
+
     nock(PAYMENT_URL).post("/payments").reply(200, { status: "declined" });
 
     const res = await request(app)
@@ -44,6 +99,30 @@ describe("POST /orders", () => {
   });
 
   it("returns 502 when payment service is unreachable", async () => {
+    pool.query
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "pending",
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "o1",
+            user_id: "u1",
+            item: "widget",
+            amount: 25,
+            status: "payment_service_unreachable",
+          },
+        ],
+      });
+
     nock(PAYMENT_URL).post("/payments").replyWithError("connection refused");
 
     const res = await request(app)
@@ -56,5 +135,6 @@ describe("POST /orders", () => {
   it("rejects missing required fields", async () => {
     const res = await request(app).post("/orders").send({ userId: "u1" });
     expect(res.statusCode).toBe(400);
+    expect(pool.query).not.toHaveBeenCalled();
   });
 });
