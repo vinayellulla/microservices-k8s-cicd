@@ -46,7 +46,7 @@ variable "master_username" {
 }
 
 
-variable "github_oidc_provider_arn" {
-  type = string
+# variable "github_oidc_provider_arn" {
+#   type = string
 
-}
+# }

@@ -60,7 +60,8 @@ resource "aws_rds_cluster_instance" "reader" {
 }
 
 resource "aws_secretsmanager_secret" "db_credentials" {
-  name = "${var.project}/rds/credentials"
+  name                    = "${var.project}/rds/credentials"
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "db_credentials" {
