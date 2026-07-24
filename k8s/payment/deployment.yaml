@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: payment
-          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-payment:latest
+          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-payment:fcfe080d5c553ba06a567130031a4b85c6c1839c
           ports:
             - containerPort: 3000
           env:
