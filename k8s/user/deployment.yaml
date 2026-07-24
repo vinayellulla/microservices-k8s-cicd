@@ -22,12 +22,19 @@ spec:
     spec:
       containers:
         - name: user
+<<<<<<< HEAD
           image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-user:506e10d894bb4fa964e6cce5f81fd33402fb0bab
+=======
+          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-user:b4596f9565716a1eb2e4f547b2a2106363f94ad0
+>>>>>>> ed87cf8 (Added Database)
           ports:
             - containerPort: 3000
           env:
             - name: PORT
               value: "3000"
+          envFrom:
+            - secretRef:
+                name: rds-credentials
           resources:
             requests:
               cpu: 100m

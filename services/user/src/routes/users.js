@@ -1,38 +1,57 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
+const pool = require("../db");
 
 const router = express.Router();
 
-// In-memory store — replace with Postgres (RDS) once infra is applied
-const users = new Map();
-
-router.get("/", (req, res) => {
-  res.json(Array.from(users.values()));
-});
-
-router.get("/:id", (req, res) => {
-  const user = users.get(req.params.id);
-  if (!user) {
-    return res.status(404).json({ error: "user not found" });
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, name, email, created_at FROM users ORDER BY created_at DESC",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("GET /users failed:", err.message);
+    res.status(500).json({ error: "internal server error" });
   }
-  res.json(user);
 });
 
-router.post("/", (req, res) => {
+router.get("/:id", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, name, email, created_at FROM users WHERE id = $1",
+      [req.params.id],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "user not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("GET /users/:id failed:", err.message);
+    res.status(500).json({ error: "internal server error" });
+  }
+});
+
+router.post("/", async (req, res) => {
   const { name, email } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({ error: "name and email are required" });
   }
 
-  const user = {
-    id: uuidv4(),
-    name,
-    email,
-    createdAt: new Date().toISOString(),
-  };
-  users.set(user.id, user);
-  res.status(201).json(user);
+  try {
+    const result = await pool.query(
+      "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id, name, email, created_at",
+      [name, email],
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    if (err.code === "23505") {
+      // unique_violation on email
+      return res.status(409).json({ error: "email already exists" });
+    }
+    console.error("POST /users failed:", err.message);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 module.exports = router;
