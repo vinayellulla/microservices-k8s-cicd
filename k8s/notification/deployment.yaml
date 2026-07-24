@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: notification
-          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-notification:fcfe080d5c553ba06a567130031a4b85c6c1839c
+          image: 666531394927.dkr.ecr.ap-south-1.amazonaws.com/microservices-cicd-notification:f17dbe8ceefb863c0fcb483841ba9529fce3f96b
           ports:
             - containerPort: 3000
           env:
