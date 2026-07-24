@@ -1,22 +1,26 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
+const pool = require("../db");
 
 const router = express.Router();
 
-// In-memory store — replace with Postgres (RDS) once infra is applied
-const payments = new Map();
-
 const DECLINE_THRESHOLD = 10000;
 
-router.get("/:id", (req, res) => {
-  const payment = payments.get(req.params.id);
-  if (!payment) {
-    return res.status(404).json({ error: "payment not found" });
+router.get("/:id", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM payments WHERE id = $1", [
+      req.params.id,
+    ]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "payment not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("GET /payments/:id failed:", err.message);
+    res.status(500).json({ error: "internal server error" });
   }
-  res.json(payment);
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { orderId, amount } = req.body;
 
   if (!orderId || amount === undefined) {
@@ -29,16 +33,16 @@ router.post("/", (req, res) => {
 
   const status = amount > DECLINE_THRESHOLD ? "declined" : "success";
 
-  const payment = {
-    id: uuidv4(),
-    orderId,
-    amount,
-    status,
-    processedAt: new Date().toISOString(),
-  };
-
-  payments.set(payment.id, payment);
-  res.status(200).json(payment);
+  try {
+    const result = await pool.query(
+      "INSERT INTO payments (order_id, amount, status) VALUES ($1, $2, $3) RETURNING *",
+      [orderId, amount, status],
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error("POST /payments failed:", err.message);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 module.exports = router;

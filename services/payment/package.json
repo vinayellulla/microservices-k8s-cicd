@@ -14,5 +14,10 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "uuid": "^9.0.1",
+    "pg": "^8.12.0"
   }
 }
