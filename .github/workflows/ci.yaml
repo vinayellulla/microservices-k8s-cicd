@@ -71,6 +71,13 @@ jobs:
            echo "Event: ${{ github.event_name }}"
            echo "Actor: ${{ github.actor }}"
 
+
+      # - name: Configure AWS credentials (OIDC)
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+      #     aws-region: ${{ env.AWS_REGION }}
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with: 
