@@ -1,11 +1,12 @@
 resource "aws_ecr_repository" "svc" {
-  for_each             = toset(var.services)
+  for_each = toset(var.services)
+
   name                 = "${var.project}-${each.key}"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 }
 
 resource "aws_ecr_lifecycle_policy" "expire_untagged" {
-
   for_each   = aws_ecr_repository.svc
   repository = each.value.name
 
@@ -19,11 +20,9 @@ resource "aws_ecr_lifecycle_policy" "expire_untagged" {
         countUnit   = "days"
         countNumber = 14
       }
-      action = { type = "expire" }
+      action = {
+        type = "expire"
+      }
     }]
   })
 }
-
-
-
-
